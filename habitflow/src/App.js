@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
+import AddHabitCard from './AddHabitCard';
 
 // PUBLIC_INTERFACE
 function Navbar() {
@@ -29,31 +30,42 @@ function getDaysInMonth(month, year) {
 
 // PUBLIC_INTERFACE
 function App() {
-  // Main habits state. Each habit: {id, name, color, streak, calendar: {YYYY-MM: [days completed]}}
+  // Main habits state. Each habit: {id, name, frequency, startDate, color, streak, calendar: {YYYY-MM: [days completed]}}
   const [habits, setHabits] = useState([]);
-  const [showAdd, setShowAdd] = useState(false);
+  const [showAdd, setShowAdd] = useState(false); // for old modal-based add
+  const [showCardAdd, setShowCardAdd] = useState(true); // display AddHabitCard by default when no habits
 
-  // Add new habit handler
   // PUBLIC_INTERFACE
-  function addHabit(habitName) {
-    if (!habitName.trim()) return;
+  function addHabitFull({ name, frequency, startDate }) {
+    // Pick color
     const colorOptions = [
       '#FFD6E0', '#BEE3DB', '#FFDFBA', '#D4E4FF', '#FFFACD', '#CCF2FF',
       '#E3E1FF', '#FFF0F5', '#FCF5C7'
     ];
     const color = colorOptions[Math.floor(Math.random() * colorOptions.length)];
-    const today = new Date();
-    const ym = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}`;
+    // Start date, fallback if missing
+    const dateObj = startDate ? new Date(startDate) : new Date();
+    const ym = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}`;
+
     setHabits([
       ...habits,
       {
         id: Math.random().toString(36).substr(2, 9),
-        name: habitName,
+        name,
+        frequency,
+        startDate,
         color: color,
         streak: 0,
         calendar: { [ym]: [] }
       }
     ]);
+    setShowCardAdd(false);
+  }
+
+  // DEPRECATED: old handler, kept for modal/fab add.
+  // PUBLIC_INTERFACE
+  function addHabit(habitName) {
+    addHabitFull({ name: habitName, frequency: "Daily", startDate: new Date().toISOString().slice(0, 10) });
   }
 
   // Toggle complete for a day in the current month (for calendar click or today shortcut)
@@ -272,64 +284,108 @@ function App() {
           flexDirection: "column",
           alignItems: "center"
         }}>
-          <div style={{ width: "100%" }}>
-            {/* Summary bar */}
+          {/* If no habits, center the AddHabitCard on dashboard */}
+          {habits.length === 0 && (
             <div style={{
-              display: "flex",
-              justifyContent: "center",
-              gap: 30,
-              margin: "0 auto 38px auto",
-              background: "linear-gradient(90deg,#ccf2ff 10%,#FFF0F5 90%)",
-              padding: "18px 36px",
-              borderRadius: 18,
-              boxShadow: "0 1px 8px rgba(160,180,210,0.12)",
-              maxWidth: 670,
+              width: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"
             }}>
-              <div style={{ fontWeight: 600, fontSize: 19, color: "#67a897" }}>
-                Habits: <span style={{ color: '#174c23', fontWeight: 700 }}>{habits.length}</span>
-              </div>
-              <div style={{ fontWeight: 500, fontSize: 16, color: "#7799c4" }}>
-                {habits.length === 0 ? "Add your first habit!" :
-                  `Active Streaks: ${habits.reduce((acc, h) => acc + (h.streak > 0 ? 1 : 0), 0)}`}
-              </div>
+              <AddHabitCard onAddHabit={addHabitFull} />
             </div>
-            {/* Habit cards grid */}
-            <div
-              className="habits-grid"
-              style={{
+          )}
+
+          {/* If there are habits, show summary, cards, FAB */}
+          {habits.length > 0 && (
+            <div style={{ width: "100%" }}>
+              {/* Summary bar */}
+              <div style={{
                 display: "flex",
-                flexWrap: "wrap",
                 justifyContent: "center",
-                gap: "2.3vw"
+                gap: 30,
+                margin: "0 auto 38px auto",
+                background: "linear-gradient(90deg,#ccf2ff 10%,#FFF0F5 90%)",
+                padding: "18px 36px",
+                borderRadius: 18,
+                boxShadow: "0 1px 8px rgba(160,180,210,0.12)",
+                maxWidth: 670,
               }}>
-              {habits.map(habit => (
-                <HabitCard
-                  key={habit.id}
-                  habit={habit}
-                  onDayClick={toggleHabitDay}
-                />
-              ))}
-            </div>
-            {/* Empty state */}
-            {habits.length === 0 && (
-              <div
-                style={{
-                  textAlign: "center",
-                  marginTop: 44,
-                  fontSize: "1.36rem",
-                  color: "#9CAACB"
-                }}
-              >
-                Add a new habit to begin tracking your streaks! <br />
-                <span role="img" aria-label="habit tip">🌱</span>
+                <div style={{ fontWeight: 600, fontSize: 19, color: "#67a897" }}>
+                  Habits: <span style={{ color: '#174c23', fontWeight: 700 }}>{habits.length}</span>
+                </div>
+                <div style={{ fontWeight: 500, fontSize: 16, color: "#7799c4" }}>
+                  {`Active Streaks: ${habits.reduce((acc, h) => acc + (h.streak > 0 ? 1 : 0), 0)}`}
+                </div>
               </div>
-            )}
-          </div>
-          {/* FAB for adding habit if habits exist */}
+              {/* Habit cards grid */}
+              <div
+                className="habits-grid"
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  justifyContent: "center",
+                  gap: "2.3vw"
+                }}>
+                {habits.map(habit => (
+                  <HabitCard
+                    key={habit.id}
+                    habit={habit}
+                    onDayClick={toggleHabitDay}
+                  />
+                ))}
+              </div>
+              {/* Add New Habit Card button (visible above grid as primary add after at least one habit exists) */}
+              <div style={{ width: "100%", display: "flex", justifyContent: "center", margin: "36px 0" }}>
+                <button
+                  className="btn btn-large"
+                  aria-label="Add new habit"
+                  style={{
+                    background: 'linear-gradient(90deg,#BEE3DB 30%, #D4E4FF 100%)',
+                    color: "#7d5641",
+                    borderRadius: 18,
+                    boxShadow: "0 2.5px 14px rgba(130,170,200,0.11)",
+                    fontWeight: 700,
+                    fontSize: 18,
+                  }}
+                  onClick={() => setShowCardAdd(true)}
+                >
+                  ＋ Add New Habit
+                </button>
+              </div>
+            </div>
+          )}
+          {/* Show AddHabitCard as overlay modal if user wants to add more (with habits present) */}
+          {habits.length > 0 && showCardAdd && (
+            <div
+              className="modal-bg"
+              style={{
+                zIndex: 210,
+                background: 'rgba(60,100,160,0.17)',
+                position: 'fixed',
+                top: 0, left: 0, right: 0, bottom: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              onClick={e => {
+                // Dismiss modal if clicking background (not card)
+                if (e.target.classList.contains("modal-bg")) {
+                  setShowCardAdd(false);
+                }
+              }}
+            >
+              <AddHabitCard
+                onAddHabit={data => {
+                  addHabitFull(data);
+                  setShowCardAdd(false);
+                }}
+              />
+            </div>
+          )}
+
+          {/* Old FAB for quick/historic modal add */}
           {habits.length > 0 && (
             <button
               className="btn"
-              aria-label="Add new habit"
+              aria-label="Add new habit (floating)"
               style={{
                 position: "fixed",
                 bottom: 34,
@@ -349,7 +405,7 @@ function App() {
           )}
         </div>
       </main>
-      {/* Modal Overlay */}
+      {/* Modal Overlay - legacy modal for FAB */}
       {showAdd && (
         <AddHabitModal
           onSubmit={addHabit}

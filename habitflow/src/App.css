@@ -227,3 +227,16 @@ input[type="text"], input[type="email"], input[type="password"], input[type="sea
   background: #d9e1ff;
   border-radius: 7px;
 }
+.add-habit-card {
+  /* Just in case className used in JSX, for style override/consistency */
+  box-shadow: 0 6px 27px rgba(168,179,220,0.14);
+  background: linear-gradient(109deg, #E3E1FF 80%, #BEE3DB 100%);
+  border-radius: 21px;
+  margin-top: 44px;
+  margin-bottom: 32px;
+  padding: 46px 38px 32px 38px;
+  min-width: 320px;
+  width: 100%;
+  max-width: 410px;
+  transition: box-shadow 0.18s;
+}
