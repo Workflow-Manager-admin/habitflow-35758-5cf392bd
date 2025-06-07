@@ -102,8 +102,9 @@ function HabitsList({ habits, onToggleDone, onEdit, onDelete }) {
           ? `${progress === 1 ? "Complete" : "0/1"} (${percent}%)`
           : `${progress}/${goal} (${percent}%)`;
 
+        // Add fade-in animation using key (for re-mounting). The card and checkbox will animate on appearance/change.
         return (
-          <div className="habit-card-v2" key={habit.id} style={{ background: habit.color || "#FFFDF7" }}>
+          <div className="habit-card-v2" key={habit.id + (isHabitDoneToday(habit) ? '-done' : '')} style={habit.color ? { background: habit.color, animation: "fadeIn 0.6s" } : { animation: "fadeIn 0.6s" }}>
             <div className="habit-card-header-row">
               <div className="habit-card-title">{habit.name}</div>
               <div className="habit-card-actions">
@@ -142,6 +143,7 @@ function HabitsList({ habits, onToggleDone, onEdit, onDelete }) {
                 type="checkbox"
                 checked={isHabitDoneToday(habit)}
                 onChange={() => onToggleDone(habit.id)}
+                style={{ animation: isHabitDoneToday(habit) ? 'fadeCheckbox 0.4s' : 'none' }}
               />
               <span className="checkmark" />
               Done for Today
