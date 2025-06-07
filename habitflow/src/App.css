@@ -129,10 +129,162 @@ body {
   justify-content: center;
 }
 
-/* HABIT CARD */
-.habit-card {
-  animation: fadeInUp 0.34s cubic-bezier(0.4,0.8,0.53,1.10);
+/* NEW HABITS LIST GRID (responsive grid v2) */
+.habits-list-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px 24px;
+  justify-items: center;
+  width: 100%;
 }
+
+@media screen and (max-width: 768px) {
+  .habits-list-grid {
+    grid-template-columns: 1fr;
+    gap: 17px 0;
+  }
+}
+
+/* HABIT CARD V2 (for HabitsList.js) */
+.habit-card-v2 {
+  width: 100%;
+  min-width: 260px;
+  max-width: 390px;
+  border-radius: 19px;
+  padding: 27px 24px 19px 24px;
+  box-shadow: 0 4px 18px rgba(140, 152, 175, 0.10);
+  background: linear-gradient(109deg, #FFDFBA 80%, #BEE3DB 100%);
+  transition: box-shadow 0.18s, transform 0.2s, background 0.18s;
+  animation: fadeInUp 0.34s cubic-bezier(0.4,0.8,0.53,1.10);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.habit-card-v2:hover {
+  box-shadow: 0 7px 26px 0 rgba(100,110,170,0.15);
+  transform: translateY(-4px) scale(1.018);
+  background: linear-gradient(109deg, #ffe9ee 70%, #e4f7ec 100%);
+}
+
+.habit-card-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 7px;
+}
+
+.habit-card-title {
+  font-size: 1.15em;
+  font-weight: 700;
+  color: #3c404a;
+  line-height: 1.1;
+  max-width: 82vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.habit-card-actions {
+  display: flex;
+  gap: 13px;
+  margin-left: 10px;
+}
+
+.habit-card-icon {
+  font-size: 1.09em;
+  opacity: 0.83;
+  margin-left: 2px;
+  cursor: pointer;
+  border-radius: 7px;
+  padding: 1px 3px;
+  background: transparent;
+  transition: background 0.14s, opacity 0.18s, color 0.17s;
+}
+.habit-card-icon:hover,
+.habit-card-icon:focus {
+  background: #fdf7ed;
+  opacity: 1;
+  color: #b44e4e;
+}
+
+/* Frequency & streak row */
+.habit-card-detail-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 1.01em;
+}
+
+.habit-card-frequency {
+  font-size: 0.97em;
+  font-weight: 600;
+  background: #f4f8ff;
+  border-radius: 7px;
+  padding: 2px 11px;
+  color: #77604e;
+  border: 1.3px solid #facaea;
+  margin-right: 2px;
+  letter-spacing: 0.01em;
+}
+.habit-card-streak {
+  font-size: 0.95em;
+  font-weight: 500;
+  background: #ffe195;
+  color: #b48800;
+  border-radius: 8px;
+  padding: 2px 9px 2px 12px;
+  letter-spacing: 0.04em;
+  box-shadow: 0 1px 8px rgba(255,225,149,0.13);
+}
+
+/* Checkbox row styling */
+.habit-card-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-size: 1em;
+  font-weight: 500;
+  margin-top: 13px;
+  color: #243042;
+}
+/* Custom checkbox style for HabitsList (minimalist) */
+.habit-card-checkbox-row input[type="checkbox"] {
+  accent-color: #40d9af;
+  width: 19px;
+  height: 19px;
+  margin: 0 7px 0 0;
+  border-radius: 4px;
+  outline: none;
+  border: 1.5px solid #b0bf99;
+}
+
+.habit-card-checkbox-row .checkmark {
+  display: none; /* no custom marker for simplicity */
+}
+
+@media screen and (max-width: 600px) {
+  .container {
+    padding: 0 5vw;
+    max-width: 99vw;
+  }
+  .habits-grid {
+    gap: 3vw;
+  }
+  .habit-card {
+    min-width: 92vw !important;
+    max-width: 99vw !important;
+    padding: 11vw 4vw !important;
+    font-size: 0.99em;
+  }
+  .habit-card-v2 {
+    min-width: 93vw !important;
+    max-width: 99vw !important;
+    padding: 11vw 4vw 8vw 4vw !important;
+    font-size: 1em;
+  }
+}
+
 @keyframes fadeInUp {
   0% { opacity: 0; transform: translateY(36px);}
   100% { opacity: 1; transform: none;}

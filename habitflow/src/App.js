@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 import AddHabitCard from './AddHabitCard';
+import HabitsList from './HabitsList';
 
 // PUBLIC_INTERFACE
 function Navbar() {
@@ -315,25 +316,14 @@ function App() {
                   {`Active Streaks: ${habits.reduce((acc, h) => acc + (h.streak > 0 ? 1 : 0), 0)}`}
                 </div>
               </div>
-              {/* Habit cards grid */}
-              <div
-                className="habits-grid"
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  justifyContent: "center",
-                  gap: "2.3vw"
-                }}>
-                {habits.map(habit => (
-                  <HabitCard
-                    key={habit.id}
-                    habit={habit}
-                    onDayClick={toggleHabitDay}
-                  />
-                ))}
-              </div>
-              {/* Add New Habit Card button (visible above grid as primary add after at least one habit exists) */}
-              <div style={{ width: "100%", display: "flex", justifyContent: "center", margin: "36px 0" }}>
+
+              {/* Add Habit Card sits at top for adding new habit when habits exist */}
+              <div style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+                marginBottom: "18px"
+              }}>
                 <button
                   className="btn btn-large"
                   aria-label="Add new habit"
@@ -350,6 +340,25 @@ function App() {
                   ＋ Add New Habit
                 </button>
               </div>
+
+              {/* Habits grid list, cards */}
+              <HabitsList
+                habits={habits}
+                onToggleDone={habitId => {
+                  // Toggle for today
+                  const today = new Date();
+                  toggleHabitDay(habitId, today.getDate());
+                }}
+                onEdit={habitId => {
+                  // To be implemented: open edit modal
+                  alert("Edit functionality coming soon for habit: " + habits.find(h => h.id === habitId)?.name);
+                }}
+                onDelete={habitId => {
+                  if (window.confirm("Delete this habit?")) {
+                    setHabits(habits.filter(h => h.id !== habitId));
+                  }
+                }}
+              />
             </div>
           )}
           {/* Show AddHabitCard as overlay modal if user wants to add more (with habits present) */}
