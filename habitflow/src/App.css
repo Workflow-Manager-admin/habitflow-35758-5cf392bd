@@ -295,6 +295,25 @@ body {
   user-select: none;
 }
 
+/* CalendarSection additional styles */
+.calendar-section {
+  margin-top: 34px;
+}
+
+.calendar-section-day {
+  transition: background 0.12s, border 0.12s, color 0.12s;
+  box-shadow: 0 1.5px 6px rgba(170,180,180,0.04);
+  letter-spacing: 0.015em;
+}
+.calendar-section-day[data-current-day="true"] {
+  outline: 2.3px solid #bbace9;
+  outline-offset: 2px;
+}
+
+.calendar-section-weekdays {
+  user-select: none;
+}
+
 .habit-streak {
   letter-spacing: 0.04em;
 }

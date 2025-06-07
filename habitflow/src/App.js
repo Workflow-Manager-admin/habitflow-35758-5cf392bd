@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './App.css';
 import AddHabitCard from './AddHabitCard';
 import HabitsList from './HabitsList';
+import CalendarSection from './CalendarSection';
 
 // PUBLIC_INTERFACE
 function Navbar() {
@@ -359,6 +360,52 @@ function App() {
                   }
                 }}
               />
+              {/* CALENDAR SECTION: visual month-view, one per habit */}
+              <div style={{ width: "100%", marginTop: 10 }}>
+                {habits.map(habit => {
+                  const today = new Date();
+                  const month = today.getMonth();
+                  const year = today.getFullYear();
+                  const ym = `${year}-${(month + 1).toString().padStart(2, "0")}`;
+                  const daysDone = habit.calendar[ym] || [];
+
+                  // Generate streak mapping logic: green for current/ongoing streak, red for missed (broken)
+                  const streakMap = {};
+                  let inGoodStreak = false;
+                  let streakLength = 0;
+                  for (let day = 1; day <= today.getDate(); day++) {
+                    if (daysDone.includes(day)) {
+                      streakLength++;
+                      if (!inGoodStreak && day === today.getDate()) {
+                        inGoodStreak = true;
+                      }
+                      if (inGoodStreak) streakMap[day] = "good";
+                    } else {
+                      if (day < today.getDate()) {
+                        streakMap[day] = "missed";
+                        inGoodStreak = false;
+                        streakLength = 0;
+                      } else {
+                        // Future days: no highlight
+                        break;
+                      }
+                    }
+                  }
+
+                  return (
+                    <CalendarSection
+                      key={`${habit.id}-calendar`}
+                      month={month}
+                      year={year}
+                      daysDone={daysDone}
+                      streakMap={streakMap}
+                      title={habit.name}
+                      habitColor={habit.color}
+                      habitId={habit.id}
+                    />
+                  );
+                })}
+              </div>
             </div>
           )}
           {/* Show AddHabitCard as overlay modal if user wants to add more (with habits present) */}
