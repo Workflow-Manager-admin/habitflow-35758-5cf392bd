@@ -1,6 +1,26 @@
 import React, { useState } from 'react';
 import './App.css';
 
+// PUBLIC_INTERFACE
+function Navbar() {
+  // The top navigation bar for the app.
+  return (
+    <nav className="navbar">
+      <div className="navbar-content">
+        <div className="navbar-left">
+          <span className="navbar-app-emoji" role="img" aria-label="chart">📈</span>
+          <span className="navbar-app-name">StreakFlow</span>
+        </div>
+        <div className="navbar-right">
+          <span className="navbar-profile-icon" title="Profile" role="img" aria-label="profile">
+            👤
+          </span>
+        </div>
+      </div>
+    </nav>
+  );
+}
+
 // Util to get days in current month for calendar rendering
 function getDaysInMonth(month, year) {
   const numDays = new Date(year, month + 1, 0).getDate();
@@ -243,27 +263,7 @@ function App() {
   // Dashboard layout & habit cards rendered here
   return (
     <div className="app" style={{ background: "linear-gradient(105deg,#e6f7ff 0%,#fff7e6 70%)" }}>
-      <nav className="navbar" style={{ background: "rgba(255,255,255,0.88)", boxShadow: '0 1.5px 6px rgba(60,60,120,0.06)' }}>
-        <div className="container" style={{ maxWidth: "990px" }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: "center" }}>
-            <div className="logo" style={{ color:"#69b5c0" }}>
-              <span className="logo-symbol" style={{ fontWeight: 700, fontSize: 23, color: "#FFC0CB", marginRight:4 }}>✦</span> <span style={{fontWeight:600}}>StreakFlow</span>
-            </div>
-            <button
-              className="btn"
-              style={{
-                background: "linear-gradient(90deg,#ffd6e0 45%,#D4E4FF 100%)",
-                color: "#393652",
-                borderRadius: 14,
-                fontWeight: 600,
-                fontSize: "1rem",
-                boxShadow: '0 .5px 3px rgba(110,180,170,0.11)'
-              }}
-              onClick={() => setShowAdd(true)}
-            >+ Add Habit</button>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
       <main>
         <div className="container" style={{
           minHeight: "100vh",
